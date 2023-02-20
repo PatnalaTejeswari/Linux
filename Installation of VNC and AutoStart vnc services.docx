@@ -1,0 +1,53 @@
+Installation of VNC and AutoStart vnc services after restart:
+Step 1: Verify the version of Ubuntu Machine using below command line- “lsb_release -a”
+Step 2: update the version of Ubuntu machine - “sudo apt-get update”
+Step 3: Install the lightdm using this command line - “sudo apt-get install lightdm”
+if lightdm is not installed then upgrade the machine use this command line- “sudo apt-get upgrade” In configuration part select lightdm and click Ok. After upgraded the machine, reboot is required.
+Step 4: Install the X11vnc on ubuntu machine – “sudo apt-get install x11vnc”
+Step 5: Create the x11vnc.service below sources location – “sudo nano /lib/systemd/system/x11vnc.service”
+Copy the below command line and paste it,
+[Unit]
+Description=x11vnc service
+After=display-manager.service network.target syslog.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/x11vnc  -forever -display :0 -auth guess -passwd password
+ExecStop=/usr/bin/killall x11vnc
+Restart=on-failure
+
+[Install]
+WantedBy=mutli-user.target
+
+Above command line mentioned with password, that can be keep respective password for access vnc password. Save the file using Esc and then use :wq! And Click enter/ Ctrl+X and click Y for save the file and then click Enter.
+
+Step 6: Use the below command line to run X11vnc on ubuntu machine
+
+i.	Systemctl daemon-reload
+ii.	Systemctl enable x11vnc.service
+iii.	Systemctl start x11vnc.service
+Step 7: After running above command line and cross verify the x11vnc.service is running or not
+		Systemctl status x11vnc.service
+
+Note: X11vnc services must be run or else after reboot it will not works to access from VNC
+
+
+
+
+
+
+
+If already install x11vnc and x11vnc.service, below steps to remove complete service.
+systemctl stop [servicename]
+systemctl disable [servicename]
+rm /etc/systemd/system/[servicename]
+rm /etc/systemd/system/[servicename] # and symlinks that might be related
+rm /usr/lib/systemd/system/[servicename] 
+rm /usr/lib/systemd/system/[servicename] # and symlinks that might be related
+systemctl daemon-reload
+systemctl reset-failed
+sudo apt-get remove x11vnc
+sudo apt-get remove - -auto-remove x11vnc
+sudo apt-get purge x11vnc
+sudo apt-get purge - -auto-remove x11vnc
+Reboot the machine and start from step 1 to 6.
